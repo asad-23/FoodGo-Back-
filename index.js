@@ -12,18 +12,24 @@ const port = process.env.PORT
 const app = express()
 app.use(express.json())
 
+// app.use(cors())
 
+app.use(cors({
+    origin: '*',
+    methods: 'GET,POST,PUT,PATCH,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
 
+app.options('*', cors());
 
-app.use(cors())
+app.use((req, res, next) => {
+    console.log(`${req.method} request to ${req.url}`);
+    next();
+});
   
-
 app.use('/api', router)
 app.use('/api', require('./routes/displayRoute.js'))
 app.use('/api', require('./routes/orderDataRouter.js'))
-
-
-
 
 app.use((req, res) => {
     res.status(200).json({
